@@ -7,7 +7,7 @@ function Header() {
     const [notifications, setNotifications] = useState([]);
     const [shortPolingMessages, setShortPollingMessages] = useState(0);
 
-    const notificationsData = useEventSource("http://34.91.217.197:8080/api/sse");
+    const notificationsData = useEventSource("http://localhost:8080/api/sse");
 
     useEffect(() => {
         if (notificationsData) {
