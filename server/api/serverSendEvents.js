@@ -15,6 +15,7 @@ sseRouter.get("/", (req, res) => {
 
 sseRouter.post("/", (req, res) => {
     eventEmitter.emit("newData", req.body.message);
+    res.sendStatus(200)
 });
 
 
