@@ -9,7 +9,7 @@ export default function useEventSource(url) {
         source.onmessage = function logEvents(event) {
             updateData(JSON.parse(event.data));
         };
-    }, []);
+    }, [url]);
 
     return data;
 }

@@ -9,7 +9,6 @@ const { Text } = Typography;
 const { Meta } = Card;
 
 const client = new W3CWebSocket('ws://127.0.0.1:8081');
-
 export default class App extends Component {
 
     state = {
@@ -27,23 +26,17 @@ export default class App extends Component {
         this.setState({ searchVal: '' })
     }
     componentDidMount() {
-        client.onopen = () => {
+        client.onopen = (data) => {
             console.log('WebSocket Client Connected');
         };
         client.onmessage = (message) => {
-            const dataFromServer = JSON.parse(message.data);
-            console.log('got reply! ', dataFromServer);
-            if (dataFromServer.type === "message") {
-                this.setState((state) =>
-                ({
-                    messages: [...state.messages,
-                    {
-                        msg: dataFromServer.msg,
-                        user: dataFromServer.user
-                    }]
-                })
-                );
-            }
+            const dataFromServer = JSON.parse('[' + message.data + ']');
+            console.log('got reply! ', dataFromServer.length, 'new messages');
+            this.setState((state) =>
+            ({
+                messages: [...state.messages, ...dataFromServer]
+            })
+            );
         };
     }
     render() {
@@ -56,7 +49,7 @@ export default class App extends Component {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 50 }} id="messages">
                             {this.state.messages.map(message =>
-                                <Card key={message.msg} style={{ width: 300, margin: '16px 4px 0 4px', alignSelf: this.state.userName === message.user ? 'flex-end' : 'flex-start' }} loading={false}>
+                                <Card key={message.msg + message.user} style={{ width: 300, margin: '16px 4px 0 4px', alignSelf: this.state.userName === message.user ? 'flex-end' : 'flex-start' }} loading={false}>
                                     <Meta
                                         avatar={
                                             <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{message.user[0].toUpperCase()}</Avatar>
